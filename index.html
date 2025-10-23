@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quadratic Equation Solver and Grade Converter</title>
+</head>
+<body>
+    <div class="container">
+        <h1>Quadratic Grade Calculator</h1>
+        <p class="subtitle">Solves Quadratic Equations and Converts Grades</p>
+
+        <!-- Quadratic Equation Solver Section -->
+        <div class="quadratic-section">
+            <h2>Quadratic Equation Solver</h2>
+            <div class="equation">ax^2 + bx + c = 0</div>
+
+            <div class="input-group">
+                <label for="a">Enter coefficient a:</label>
+                <input type="number" id="a" placeholder="e.g., 1" step="any">
+            </div>
+
+            <div class="input-group">
+                <label for="b">Enter coefficient b:</label>
+                <input type="number" id="b" placeholder="e.g., -3" step="any">
+            </div>
+
+            <div class="input-group">
+                <label for="c">Enter coefficient c:</label>
+                <input type="number" id="c" placeholder="e.g., 2" step="any">
+            </div>
+            <div class="button-group">
+                <button type="submit" onclick="solveQuadratic()">Solve Equation</button>
+                <button type="submit" onclick="clearQuadratic()">Clear</button>
+            </div>
+            <div id="quadraticResult" class="result">
+                Enter values and click "Solve Equation"
+            </div>
+        </div>
+
+        <!-- Grade Converter Section -->
+        <div class="grade-section">
+            <h2>Score Converter</h2>
+
+            <div class="input-group">
+                <label for="score">Enter numeric score (0-100):</label>
+                <input type="number" id="score" placeholder="e.g., 85" min="0" max="100">
+            </div>
+
+            <div class="button-group">
+                <button type="submit" onclick="convertScore()">Convert</button>
+                <button type="submit" onclick="clearGrade()">Clear</button>
+            </div>
+
+            <div id="gradeResult" class="result">
+                Enter a score and click "Show Grade"
+            </div>
+
+            <!-- Grade Scale Reference -->
+            <div class="grade-scale">
+                <h3>Grade Scale:</h3>
+                <div class="scale-grid">
+                    <div class="scale-item" >A+: 85-100</div>
+                    <div class="scale-item" >A: 75-84</div>
+                    <div class="scale-item" >B+: 65-74</div>
+                    <div class="scale-item" >B: 60-64</div>
+                    <div class="scale-item" >C+: 55-59</div>
+                    <div class="scale-item" >C: 50-54</div>
+                    <div class="scale-item" >D: 0-49</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quadratic Equation Solver Function
+        function solveQuadratic() {
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            const c = parseFloat(document.getElementById('c').value);
+            const resultElement = document.getElementById('quadraticResult');
+            
+            // Validation
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                resultElement.innerHTML = "Please enter valid numbers for all coefficients.";
+                
+                return;
+            }
+            
+            if (a === 0) {
+                resultElement.innerHTML = "Coefficient 'a' cannot be zero (not a quadratic equation).";
+                
+                return;
+            }
+            
+            // Calculate discriminant
+            const discriminant = b * b - 4 * a * c;
+            let solution;
+            
+            if (discriminant > 0) {
+                // Two real roots
+                const root1 = (-b + Math.sqrt(discriminant)) / (2 * a);
+                const root2 = (-b - Math.sqrt(discriminant)) / (2 * a);
+                solution = `✅ Two real roots:<br>
+                        <strong>x₁ = ${root1.toFixed(4)}</strong><br>
+                        <strong>x₂ = ${root2.toFixed(4)}</strong>`;
+            
+            } else if (discriminant === 0) {
+                // One real root
+                const root = -b / (2 * a);
+                solution = `✅ One real root:<br>
+                        <strong>x = ${root.toFixed(4)}</strong>`;
+                
+            } else {
+                // Complex roots
+                const realPart = (-b / (2 * a)).toFixed(4);
+                const imaginaryPart = (Math.sqrt(-discriminant) / (2 * a)).toFixed(4);
+                solution = `✅ Two complex roots:<br>
+                        <strong>x₁ = ${realPart} + ${imaginaryPart}i</strong><br>
+                        <strong>x₂ = ${realPart} - ${imaginaryPart}i</strong>`;
+        
+            }
+            
+            resultElement.innerHTML = solution;
+        }
+        
+        // Grade Converter Function
+        function convertGrade() {
+            const score = parseInt(document.getElementById('score').value);
+            const resultElement = document.getElementById('gradeResult');
+            
+            // Validation
+            if (isNaN(score) || score < 0 || score > 100) {
+                resultElement.innerHTML = "Please enter a valid score between 0 and 100.";
+                return;
+            }
+            
+            // Determine grade
+            let grade, color;
+            if (score >= 85) {
+                grade = "A+"; 
+            } else if (score >= 75) {
+                grade = "A";
+            } else if (score >= 65) {
+                grade = "B+"; 
+            } else if (score >= 60) {
+                grade = "B"; 
+            } else if (score >= 55) {
+                grade = "C+";
+            } else if (score >= 50) {
+                grade = "C"; 
+            } else {
+                grade = "D"; 
+            }
+            
+            resultElement.innerHTML = `
+                <div style="text-align: center;">
+                    <div style="font-size: 2em; color: ${color}; margin: 10px 0;"><strong>${grade}</strong></div>
+                    Numeric Score: <strong>${score}/100</strong><br>
+                    Letter Grade: <strong>${grade}</strong>
+                </div>
+            `;
+            resultElement.style.borderLeftColor = color;
+        }
+        
+        // Clear Functions
+        function clearQuadratic() {
+            document.getElementById('a').value = '';
+            document.getElementById('b').value = '';
+            document.getElementById('c').value = '';
+            document.getElementById('quadraticResult').innerHTML = 'Enter values and click "Solve Equation"';
+            document.getElementById('quadraticResult').style.borderLeftColor = "#3498db";
+        }
+        
+        function clearGrade() {
+            document.getElementById('score').value = '';
+            document.getElementById('gradeResult').innerHTML = 'Enter a score and click "Convert Grade"';
+            document.getElementById('gradeResult').style.borderLeftColor = "#3498db";
+        }
+        
+        // Allow Enter key to trigger functions
+        document.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                if (document.activeElement.id === 'score') {
+                    convertGrade();
+                } else if (['a', 'b', 'c'].includes(document.activeElement.id)) {
+                    solveQuadratic();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
